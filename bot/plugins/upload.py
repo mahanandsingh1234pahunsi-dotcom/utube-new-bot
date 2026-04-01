@@ -1,4 +1,4 @@
-from pyrogram import StopTransmission, filters
+from pyrogram import StopTransmission, filters, enums
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 
 import os
@@ -48,7 +48,7 @@ async def _upload(c: UtubeBot, m: Message):
 
     if c.counter >= 6:
         await m.reply_text(tr.DAILY_QOUTA_REACHED)
-        return   # ✅ FIXED
+        return
 
     snt = await m.reply_text(tr.PROCESSING)
     c.counter += 1
@@ -64,7 +64,7 @@ async def _upload(c: UtubeBot, m: Message):
 
     if not status:
         c.counter = max(0, c.counter - 1)
-        await snt.edit_text(text=file, parse_mode="markdown")
+        await snt.edit_text(text=file)   # ✅ removed markdown
         return
 
     try:
@@ -82,7 +82,15 @@ async def _upload(c: UtubeBot, m: Message):
     if not status:
         c.counter = max(0, c.counter - 1)
 
-    await snt.edit_text(text=link, parse_mode="markdown")
+    # ✅ FINAL FIX: use HTML instead of markdown
+    try:
+        await snt.edit_text(
+            text=link,
+            parse_mode=enums.ParseMode.HTML
+        )
+    except Exception as e:
+        log.warning(f"Final message failed: {e}")
+        await snt.edit_text(text=str(link))
 
 
 def get_download_id(storage: dict) -> str:
