@@ -94,10 +94,14 @@ class Uploader:
 
             youtube = YouTube(google)
 
-            # ✅ Upload in thread
             response = await loop.run_in_executor(
-                None, youtube.upload_video, self.file, properties
-            )
+    None,
+    youtube.upload_video,
+    self.file,
+    properties,
+    self.progress,
+    *self.args
+)
 
             log.debug(response)
 
