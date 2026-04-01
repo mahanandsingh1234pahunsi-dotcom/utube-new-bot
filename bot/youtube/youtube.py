@@ -1,6 +1,8 @@
 import time
 import random
 import logging
+import os
+import asyncio
 
 from httplib2 import HttpLib2Error
 from http.client import (
@@ -13,7 +15,6 @@ from http.client import (
     BadStatusLine,
 )
 
-# ✅ Updated Google API imports (modern)
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.errors import HttpError
 from googleapiclient.discovery import Resource
@@ -76,7 +77,6 @@ class YouTube:
             ),
         )
 
-        # ✅ Updated MediaFileUpload
         media_body = MediaFileUpload(
             self.video,
             chunksize=self.chunksize,
@@ -95,29 +95,63 @@ class YouTube:
     def _resumable_upload(self) -> dict:
         response = None
 
+        start_time = time.time()
+        total_size = os.path.getsize(self.video)
+
         while response is None:
             try:
                 status, response = self.request.next_chunk()
 
+                # ✅ UPLOAD PROGRESS
+                if status and self.progress:
+                    try:
+                        progress_float = status.progress()
+
+                        uploaded_bytes = int(progress_float * total_size)
+                        total_bytes = total_size
+
+                        now = time.time()
+                        diff = now - start_time or 1
+
+                        speed = uploaded_bytes / diff  # bytes/sec
+                        remaining = total_bytes - uploaded_bytes
+                        eta = remaining / speed if speed > 0 else 0
+
+                        coro = self.progress(
+                            uploaded_bytes,
+                            total_bytes,
+                            start_time,
+                            "Uploading...",
+                            *self.progress_args
+                        )
+
+                        loop = asyncio.get_event_loop()
+
+                        if loop.is_running():
+                            loop.create_task(coro)
+                        else:
+                            asyncio.run(coro)
+
+                    except Exception as e:
+                        log.debug(f"Progress error: {e}")
+
+                # ✅ FINAL RESPONSE
                 if response is not None:
                     if "id" in response:
                         self.response = response
                     else:
-                        self.response = None
-                        raise UploadFailed(
-                            f"Unexpected response: {response}"
-                        )
+                        raise UploadFailed(f"Unexpected response: {response}")
 
             except HttpError as e:
                 if e.resp.status in self.RETRIABLE_STATUS_CODES:
                     self.error = (
-                        f"Retriable HTTP error {e.resp.status} occurred:\n{e.content}"
+                        f"HTTP error {e.resp.status}: {e.content}"
                     )
                 else:
                     raise
 
             except self.RETRIABLE_EXCEPTIONS as e:
-                self.error = f"Retriable error occurred: {e}"
+                self.error = f"Error: {e}"
 
             if self.error:
                 log.debug(self.error)
@@ -126,13 +160,11 @@ class YouTube:
                 if self.retry > self.MAX_RETRIES:
                     raise MaxRetryExceeded("Max retries exceeded.")
 
-                max_sleep = 2 ** self.retry
-                sleep_seconds = random.random() * max_sleep
-
-                log.debug(f"Sleeping {sleep_seconds:.2f}s before retry...")
+                sleep_seconds = random.random() * (2 ** self.retry)
+                log.debug(f"Retrying in {sleep_seconds:.2f}s...")
                 time.sleep(sleep_seconds)
 
 
 def print_response(response: dict) -> None:
     for key, value in response.items():
-        print(key, ":", value, "\n")
+        print(f"{key}: {value}\n")
