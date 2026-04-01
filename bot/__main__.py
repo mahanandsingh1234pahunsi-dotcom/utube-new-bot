@@ -1,5 +1,7 @@
 import logging
 
+from pyrogram import idle  # ✅ IMPORTANT
+
 from .utubebot import UtubeBot
 from .config import Config
 
@@ -12,5 +14,9 @@ if __name__ == "__main__":
 
     bot = UtubeBot()
     bot.start()
+
     print("Bot is running...")
-    bot.idle()
+
+    idle()   # ✅ correct usage
+
+    bot.stop()
