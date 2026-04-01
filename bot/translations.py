@@ -1,55 +1,64 @@
 class Messages:
 
     START_MSG = (
-        "Hi there {}.\n\nI'm Youtube Uploader Bot.You can use me to upload any telegram video to youtube "
-        "once you authorise me.You can know more from /help.\n\nThank you."
+        "Hi there {}.\n\nI'm a YouTube Uploader Bot. You can use me to upload any Telegram video to YouTube "
+        "once you authorize me. You can know more from /help.\n\nThank you."
     )
 
     HELP_MSG = [
         ".",
-        "Hi there.\n\nFirst things first. You should be aware that youtube processes each and every video uploaded, "
-        "and its AI is amazing that it flags the video for copyrights if it finds copywrited content as soon as its "
-        "uploaded, and you will not be able to publish the video.\n\nRead through all the pages to know how I work.",
-        "**Lets learn how I work.**\n\n**Step 1:** __You authorise me to upload to your youtube channel.More about "
-        "this in comming pages.__\n\n**Step 2:** __You forward any Telegram video to me.__\n\n**Step 3:** __You reply "
-        "__/upload __to the forwarded video file.You can also specify some title in the upload command, but its "
-        "optional though.Title will follow the __`/upload`.__If no title is given, filename will be used as title.__"
-        "\n\n**Step 4:** __I remotely download the file and uploads to your Youtube channel.__\n\n**Step 5:** __I "
-        "send you the Youtube link after upload.__",
-        "**Create your youtube channel**\n\nThere is no point in using me if you dont have a Youtube Channel.So go "
-        "through the given steps to create one.\n\n**Step 1:** __Sign in to YouTube on a computer or using the mobile."
-        "__\n\n**Step 2:** __Try any action that requires a channel, such as uploading a video, posting a comment, "
-        "or creating a playlist.__\n\n**Step 3:** __If you don't yet have a channel, you'll see a prompt to create "
-        "a channel.__\n\n**Step 4:** __Check the details and confirm to create your new channel.__",
-        "**Verify your YouTube account**\n\nYoutube take spam and abuse very seriously. So you are asked to verify "
-        "your Youtube account. Once you've verified your account, you will be able to upload videos longer than 15 "
-        "minutes. If you haven't verified your account every video uploaded which are longer than 15 minutes will be "
-        "removed.\n[Verify your Youtube account here.](http://www.youtube.com/verify)\n\n__Remember to verify your "
-        "project, else your uploads will be kept private.__",
-        "**Now lets authorise.**\n\nYou need to give me the access to upload videos to your Youtube account.For that "
-        "open the given link and allow access and copy the code. Come back here and type `/authorise copied-code` and "
-        "send it.\n\n**Fear not!**\nI'm not a hacker or someone who wants to creep into people's privacy. I respect "
-        "one's privacy. I'm here just to help anyone who wants help. If I was a hacker I won't be sitting here "
-        "writing Telegram Bots.",
+        "Hi there.\n\nFirst things first. You should know that YouTube processes every uploaded video. "
+        "Its AI can detect copyrighted content quickly and may block publishing.\n\n"
+        "Read all pages to understand how I work.",
+
+        "**Let’s learn how I work.**\n\n"
+        "**Step 1:** Authorize me to upload to your YouTube channel.\n\n"
+        "**Step 2:** Forward any Telegram video to me.\n\n"
+        "**Step 3:** Reply `/upload` to the video. You can optionally add a title.\n\n"
+        "**Step 4:** I download and upload it.\n\n"
+        "**Step 5:** I send you the YouTube link.",
+
+        "**Create your YouTube channel**\n\n"
+        "1. Sign in to YouTube\n"
+        "2. Try uploading or commenting\n"
+        "3. Create channel if prompted\n"
+        "4. Confirm details",
+
+        "**Verify your YouTube account**\n\n"
+        "Verification allows uploads longer than 15 minutes.\n"
+        "[Verify here](http://www.youtube.com/verify)\n\n"
+        "Unverified accounts may have restricted uploads.",
+
+        "**Now let's authorize.**\n\n"
+        "Open the provided link, allow access, copy the code, and send:\n"
+        "`/authorise YOUR_CODE`\n\n"
+        "Don’t worry — your data is safe."
     ]
 
-    NOT_A_REPLY_MSG = "Please reply to some video file."
+    NOT_A_REPLY_MSG = "Please reply to a video file."
 
     NOT_A_MEDIA_MSG = "No media file found. " + NOT_A_REPLY_MSG
 
-    NOT_A_VALID_MEDIA_MSG = "This is not a valid media"
+    NOT_A_VALID_MEDIA_MSG = "This is not a valid media."
 
-    DAILY_QOUTA_REACHED = "Looks like you are trying to upload more than 6 videos today! By default youtube only "
-    "allows about 6 uploads daily, so this request might fail!!"
+    # ✅ FIXED (multi-line string)
+    DAILY_QOUTA_REACHED = (
+        "Looks like you are trying to upload more than 6 videos today!\n"
+        "YouTube usually allows around 6 uploads per day, so this may fail."
+    )
 
-    PROCESSING = "Processing....."
+    PROCESSING = "Processing..."
 
-    NOT_AUTHENTICATED_MSG = "You have not authenticated me to upload video to any account. see /help to authenticate"
+    NOT_AUTHENTICATED_MSG = (
+        "You have not authorized me yet.\nUse /help to authenticate."
+    )
 
-    NO_AUTH_CODE_MSG = "There is no code. Please provide some code"
+    NO_AUTH_CODE_MSG = "No code provided. Please send the authorization code."
 
-    AUTH_SUCCESS_MSG = "Congrats, you have successfully authenticated me to upload to Youtube.\nHappy uploading!"
+    AUTH_SUCCESS_MSG = (
+        "✅ Successfully authenticated!\nNow you can upload videos."
+    )
 
-    AUTH_FAILED_MSG = "Authentication failed\nDetails:{}"
+    AUTH_FAILED_MSG = "❌ Authentication failed.\nDetails: {}"
 
-    AUTH_DATA_SAVE_SUCCESS = "Successfully saved the given auth data!"
+    AUTH_DATA_SAVE_SUCCESS = "✅ Authorization data saved successfully!"
